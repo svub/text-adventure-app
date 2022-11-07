@@ -26,8 +26,8 @@ import { Component, Vue, Prop } from "vue-property-decorator";
 import { Action, State } from "vuex-class";
 import { logJson } from "../../shared/util";
 import { AddItem, Item } from "../../shared/entities";
-import book from "../../book";
 import ItemElement from './ItemElement.vue';
+import book from "../../book";
 
 @Component({
   name: "AddItemElement",
@@ -46,8 +46,8 @@ export default class AddItemElement extends Vue {
     }
   }
 
-  get item(): Item {
-    return book.config.items.find((item) => item && item.id === this.element.id)!;
+  get item(): Item | undefined {
+    return book.config.items.find((item) => item && item.id === this.element.id);
   }
 }
 </script>

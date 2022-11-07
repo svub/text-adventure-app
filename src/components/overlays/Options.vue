@@ -11,7 +11,7 @@
         button.cancel(@click="confirm = false")
 
   .list
-    .option(v-for="option in config.options" :class="option.id")
+    .option(v-for="option in config.options" v-if="option.choices.length > 1" :class="option.id")
       label {{ option.title }}
       .choices
         .choice(v-for="choice in option.choices" :class="choice.id")
@@ -31,20 +31,16 @@ import book from '../../book';
   },
 })
 export default class Options extends Vue {
-  @State options: OptionsType;
-  @Getter started: boolean;
-  @Action setOption: Function;
-  @Action reset: Function;
-  config = book.config;
-  confirm = false;
+  @State private options!: OptionsType;
+  @Getter private started!: boolean;
+  @Action private setOption!: Function;
+  @Action private reset!: Function;
+  private config = book.config;
+  private confirm = false;
 
   choose(option: Option, choice: Choice) {
     this.setOption({ option, choice });
   }
-
-  // doReset() {
-  //   if (confirm('Really start from scratch?')) this.reset()
-  // }
 }
 </script>
 
