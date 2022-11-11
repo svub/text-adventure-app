@@ -18,30 +18,23 @@ main(:class="page" :lang="lang")
           Options(v-if="overlay === 'options'")
           FeedbackMode(v-if="overlay === 'feedbackMode'")
           Share(v-if="overlay === 'shareOverlay'" :url="overlayData.url" :title="overlayData.title")
-        .actions
-          button.close(@click="setOverlay('')")
+      .actions
+        button.close(@click="setOverlay('')")
   //- HelloWorld(:msg="msg")
-</template>
-<template native>
-  <Page>
-    <ActionBar :title="navbarTitle" />
-    <GridLayout rows="auto, auto">
-      <HelloWorld :msg="msg" />
-    </GridLayout>
-  </Page>
 </template>
 
 <script lang="ts">
 import { Component, Vue, Watch } from "vue-property-decorator";
-// import HelloWorld from './components/HelloWorld.vue';
+import { State, Action } from "vuex-class";
+import uniq from "lodash/uniq";
+// import localforage from "localforage";
 import Start from "./views/Start.vue";
 import Read from "./views/Read.vue";
 import Tester from "./views/Tester.vue";
-import { State, Action } from "vuex-class";
 import book from "./book";
 import { clone, logJson, warn } from "./shared/util";
 import appState from "./store";
-import { Option } from "./shared/entities";
+import { Option, Reference } from "./shared/entities";
 import Chapters from './components/overlays/Chapters.vue';
 import Items from './components/overlays/Items.vue';
 import Credits from './components/overlays/Credits.vue';
@@ -49,7 +42,6 @@ import Imprint from './components/overlays/Imprint.vue';
 import Options from './components/overlays/Options.vue';
 import FeedbackMode from './components/overlays/FeedbackMode.vue';
 import Share from './components/overlays/Share.vue';
-import uniq from "lodash/uniq";
 
 const { VUE_APP_MODE, VUE_APP_PLATFORM } = process.env;
 
@@ -58,15 +50,12 @@ const { VUE_APP_MODE, VUE_APP_PLATFORM } = process.env;
   components: { Start, Read, Tester, Chapters, Items, Credits, Imprint, Options, FeedbackMode, Share },
 })
 export default class App extends Vue {
-  private navbarTitle = `App.vue`;
-  // private msg = `Mode=${VUE_APP_MODE} and Platform=${VUE_APP_PLATFORM}`;
-
   @State page;
   @State overlay;
   @State overlayData;
   @State theme;
   @State items;
-  @State path;
+  @State path!: Array<Reference>;
   @State options!: { [id: string]: Option };
   @Action init;
   @Action("page") setPage;
@@ -111,7 +100,8 @@ export default class App extends Vue {
       .filter(chapter => !!chapter)
       .map((chapter) => {
         chapter!.sections = chapter!.sections
-          .filter(section => !!this.path.find(r => r.chapterId === chapter!.id && r.sectionId === section.id));
+          .filter(section => !!this.path.find(r => r.chapterId === chapter!.id && r.sectionId === section.id))
+          .map(section => ({ id: section.id, title: section.title, next: [], elements: [] }));
         return chapter;
       }))!;
   }
@@ -125,8 +115,6 @@ export default class App extends Vue {
   updateClasses() {
     document.documentElement.className = Object.values(this.options).join(' ') + (this.overlay ? ' overlay-open' : '');
   }
-  //   document.body.className = Object.values(this.options).join(' ');
-  // }
 }
 </script>
 
