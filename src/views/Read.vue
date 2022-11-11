@@ -12,7 +12,6 @@
     transition(name="section" mode="out-in")
       .section(:key="`${position.chapter.id}-${position.section.id}`")
         .title
-          //- .icon icon
           .position(v-if="feedbackEnabled") {{ position.chapter.id }}-{{ position.section.id }}
           h2(v-if="isFirst") {{ position.chapter.title }}
           h3 {{ position.section.title }}
@@ -28,21 +27,20 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Watch } from "vue-property-decorator";
+import { Component } from "vue-property-decorator";
 import { State, Action, Getter } from "vuex-class";
 import last from "lodash/last";
-// import hyphenopoly from "hyphenopoly";
-import { Link, SpecialLink, isSpecialLink, Reference, Overlays, Functions, Pages } from "../shared/entities";
+import { Link, SpecialLink, isSpecialLink, Reference } from "../shared/entities";
 import TextElement from "../components/elements/TextElement.vue";
 import { inPath, Items, Position } from "../store";
 import book from "../book";
-import { error, logJson } from "../shared/util";
+import { TextBase } from "@/utls/TextBase";
 
 @Component({
   name: "Read",
   components: { TextElement },
 })
-export default class Read extends Vue {
+export default class Read extends TextBase {
   @State path!: Reference[];
   @State items!: Items;
   @Action page!: Function;
@@ -52,20 +50,7 @@ export default class Read extends Vue {
   @Getter position!: Position;
   @Getter feedbackEnabled!: boolean;
   @Getter itemCount!: number;
-  // translator: Function;
   config = book.config;
-
-  // not working :( - can't find a suitable version that works for dynamic languages
-  // might have to do that as part of the parsing process
-  // TODO: move that to importer! that saves on deps and does the work once! :)
-  // async created() {
-  //   const lang = config.language || "en-us";
-  //   log('Read created', lang);
-  //   const hyphenator = hyphenopoly.config({ "require": [lang] });
-  //   logRaw('create hypenator', hyphenator);
-  //   this.translator = await hyphenator.get(lang);
-  //   logRaw('create translator', this.translator);
-  // }
 
   enabled(link: Link | SpecialLink): boolean {
     // enabled if: decision taken before (in path); or if last in progress == current (any decision possible)
@@ -77,30 +62,6 @@ export default class Read extends Vue {
   selected(link: Link | SpecialLink): boolean {
     if (isSpecialLink(link)) return false;
     return inPath(link, this.path);
-  }
-
-  open(link: Link | SpecialLink) {
-    if (isSpecialLink(link)) {
-      // Special functions
-      if (link.id === Functions.reset) return this.reset({ keepItems: true });
-      if (link.id === Functions.share) return this.share(link.title, link.data);
-      // Pages
-      if (Pages[link.id]) return this.page(link.id);
-      // Overlays
-      if (Overlays[link.id]) return this.overlay(link.id);
-    }
-    this.goto(link);
-  }
-
-  share(title: string, url?: string) {
-    if (!url) error('Read.share: url not defined', title);
-    const data = { title, url };
-    if (navigator.share) {
-      navigator.share(data);
-    }
-    else {
-      this.overlay({ overlay: Overlays.shareOverlay, data });
-    }
   }
 
   get isFirst(): boolean {
