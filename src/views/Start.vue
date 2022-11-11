@@ -32,18 +32,22 @@ export default class Start extends Vue {
   @Getter position: Position;
   @Getter started: boolean;
   book = book;
+  fullscreenElement = document.body;
+
+  mounted() {
+    if (document.fullscreenElement) {
+      document.exitFullscreen();
+    }
+  }
 
   startReading() {
-    // TODO add config whether book should be opened in fullscreen or not.
     if (!document.fullscreenElement) {
-      const element = document.body;
-    
       const prefixes = ['', 'webkit', 'moz', 'ms'].map((prefix) => prefix ? prefix + 'Request' : 'request');
       const methodNames = prefixes.map((prefix) => prefix + 'Fullscreen').concat(prefixes.map((prefix) => prefix + 'FullScreen'));
-      const requestMethod = element[intersection(keys(element), methodNames)?.[0]];
+      const requestMethod = this.fullscreenElement[intersection(keys(this.fullscreenElement), methodNames)?.[0]];
       
       if (requestMethod) {
-        requestMethod.call(element);
+        requestMethod.call(this.fullscreenElement);
       } 
     }
     this.start();
