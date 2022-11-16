@@ -1,6 +1,5 @@
 <template lang="pug">
 .add-item(v-observe-visibility="visibilityChanged")
-  //- addItem {{ element }} {{ item }}
   ItemElement(v-if="item" :item="item")
   .error(v-else)
     .title Item not found
@@ -34,7 +33,7 @@ import book from "../../book";
   components: { ItemElement },
 })
 export default class AddItemElement extends Vue {
-  @Prop(Object) private element: AddItem;
+  @Prop(Object) element!: AddItem;
   @State items;
   @Action addItem;
 
