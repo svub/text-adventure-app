@@ -1,3 +1,5 @@
+**Note: I don't currently maintain this project. All changes are done directly in the Hollow White repository (which is based on this one there). If you're interested in using this framework for creating interactive text adventures, get in touch with me or open an issue. I would love to back port all the improvements here but I just don't have the time and motivation right now to do it. Seeing another project wanting to use this framework and/or somebody being willing to help would for sure change that!**
+
 # Text Adventure App
 
 > Turn your writings into an interactive app that blends game and book into one experience.
