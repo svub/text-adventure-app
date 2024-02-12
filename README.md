@@ -1,4 +1,4 @@
-**Note: I don't currently maintain this project. All changes are done directly in the Hollow White repository (which is based on this one there). If you're interested in using this framework for creating interactive text adventures, get in touch with me or open an issue. I would love to back port all the improvements here but I just don't have the time and motivation right now to do it. Seeing another project wanting to use this framework and/or somebody being willing to help would for sure change that!**
+**Note: Currently, I am not maintaining this project. All changes are made directly in the [Hollow White repository](https://github.com/svub/hollow-white), which is based on this one. If you are interested in using this framework to create interactive text adventures, please get in touch with me or [open an issue](https://github.com/svub/text-adventure-app/issues). It would be great to upgrade this project to Vue3 and backport all the improvements into this generic framework. I need some motivation, such as seeing another project wanting to use this framework and/or someone who is willing to help!**
 
 # Text Adventure App
 
